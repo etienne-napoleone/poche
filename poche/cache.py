@@ -3,7 +3,10 @@ from datetime import timedelta
 from typing import Any
 from typing import Dict
 from typing import Hashable
+from typing import ItemsView
+from typing import KeysView
 from typing import Optional
+from typing import ValuesView
 
 from poche.cacheitem import Cacheitem
 
@@ -40,6 +43,15 @@ class Cache:
 
     def delete(self, key: Hashable) -> None:
         del self._store[key]
+
+    def keys(self) -> KeysView[Hashable]:
+        return self._store.keys()
+
+    def values(self) -> ValuesView[Any]:
+        return self._store.values()
+
+    def items(self) -> ItemsView[Hashable, Cacheitem]:
+        return self._store.items()
 
     def flush(self) -> None:
         self._store.clear()
