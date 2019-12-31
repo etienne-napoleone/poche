@@ -28,6 +28,9 @@ class Cache:
         else:
             return value[1]
 
+    def delete(self, key: Hashable) -> Any:
+        del self._store[key]
+
     def get_or_set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None
     ) -> Any:
