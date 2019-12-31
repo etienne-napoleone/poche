@@ -13,13 +13,17 @@ ttl:
 ```python
 >>> from time
 >>> from poche import Cache
->>> c = Cache()
->>> c.set("my_key", "my_value", ttl=1)
+>>> c = Cache(default_ttl=5)  # optional default ttl
+>>> c.set("my_key", "my_value", ttl=1)  # use specified ttl
 >>> time.sleep(2)
 >>> c.get("my_key")
 Traceback (most recent call last):
   ...
 KeyError
+>>> c.set("my_key", "my_value")  # use default ttl
+>>> time.sleep(2)
+>>> c.get("my_key")
+"my_key"
 ```
 
 disable override:
