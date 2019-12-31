@@ -28,9 +28,6 @@ class Cache:
         else:
             return value[1]
 
-    def delete(self, key: Hashable) -> Any:
-        del self._store[key]
-
     def get_or_set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None
     ) -> Any:
@@ -39,6 +36,9 @@ class Cache:
         except KeyError:
             self.set(key, value, ttl)
             return value
+
+    def delete(self, key: Hashable) -> None:
+        del self._store[key]
 
     def flush(self) -> None:
         self._store.clear()
