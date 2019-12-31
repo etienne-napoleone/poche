@@ -16,6 +16,13 @@ def test_set(cache):
     assert cache._store[KEY] == VALUE_TUPLE
 
 
+def test_set_default_ttl(cache_default_ttl):
+    cache_default_ttl.set(KEY, VALUE)
+    time.sleep(2)
+    with pytest.raises(KeyError):
+        assert cache_default_ttl.get(KEY) == VALUE_TUPLE
+
+
 def test_set_key_not_hashable(cache):
     with pytest.raises(TypeError):
         assert cache.set({}, VALUE)
@@ -87,8 +94,25 @@ def test_flush(cache):
 
 
 def test_get_expiration(cache):
-    assert cache._get_expiration(TTL) > datetime.now()
+    end = cache._get_expiration(TTL)
+    assert end > datetime.now()
+    time.sleep(2)
+    assert end > datetime.now()
 
 
 def test_get_expiration_no_ttl(cache):
     assert not cache._get_expiration(None)
+
+
+def test_get_expiration_default_ttl(cache_default_ttl):
+    end = cache_default_ttl._get_expiration(TTL)
+    assert end > datetime.now()
+    time.sleep(2)
+    assert end > datetime.now()
+
+
+def test_get_expiration_default_ttl_no_ttl(cache_default_ttl):
+    end = cache_default_ttl._get_expiration(None)
+    assert end > datetime.now()
+    time.sleep(2)
+    assert end < datetime.now()

@@ -8,7 +8,8 @@ from typing import Tuple
 
 
 class Cache:
-    def __init__(self):
+    def __init__(self, default_ttl: Optional[int] = None) -> None:
+        self.default_ttl = default_ttl
         self._store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
 
     def set(
@@ -38,4 +39,14 @@ class Cache:
         self._store.clear()
 
     def _get_expiration(self, ttl: Optional[int]) -> Optional[datetime]:
-        return datetime.now() + timedelta(seconds=ttl) if ttl else None
+        print(ttl, self.default_ttl)
+        if not self.default_ttl and not ttl:
+            return None
+        elif not self.default_ttl and ttl:
+            return datetime.now() + timedelta(seconds=ttl)
+        elif self.default_ttl and not ttl:
+            return datetime.now() + timedelta(seconds=self.default_ttl)
+        elif self.default_ttl and ttl:
+            return datetime.now() + timedelta(seconds=ttl)
+        else:
+            return None  # silence mypy
