@@ -2,6 +2,8 @@ from datetime import datetime
 from datetime import timedelta
 import time
 
+import pytest
+
 from poche.cache import Cache
 
 TTL = 3600
@@ -46,7 +48,8 @@ def test_get():
 
 
 def test_get_absent():
-    assert not Cache.get(KEY)
+    with pytest.raises(KeyError):
+        assert Cache.get(KEY)
     Cache._store = {}
 
 
@@ -58,7 +61,8 @@ def test_get_ttl():
 
 def test_get_ttl_expired():
     Cache._store[KEY] = VALUE_TUPLE_TTL
-    assert not Cache.get(KEY)
+    with pytest.raises(KeyError):
+        assert Cache.get(KEY)
     Cache._store = {}
 
 
@@ -72,7 +76,8 @@ def test_ttl():
 def test_ttl_expire():
     Cache.set(KEY, VALUE, 1)
     time.sleep(2)
-    assert not Cache.get(KEY)
+    with pytest.raises(KeyError):
+        assert Cache.get(KEY)
     Cache._store = {}
 
 
