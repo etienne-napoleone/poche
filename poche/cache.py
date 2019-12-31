@@ -27,13 +27,13 @@ class Cache:
     def get(key: str) -> Any:
         value_tuple = Cache._store.get(key)
         if not value_tuple:
-            return None
+            raise KeyError
         elif isinstance(value_tuple[0], datetime):
             if value_tuple[0] > datetime.now():
                 return value_tuple[1]
             else:
                 del Cache._store[key]
-                return None
+                raise KeyError
         else:
             return value_tuple[1]
 
