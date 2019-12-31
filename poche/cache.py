@@ -20,7 +20,10 @@ class Cache:
 
     def get(self, key: Hashable) -> Any:
         item = self._store[key]
-        if isinstance(item.expire, datetime) and item.expire < datetime.now():
+        if (
+            isinstance(item.expiration, datetime)
+            and item.expiration < datetime.now()
+        ):
             del self._store[key]
             raise KeyError
         else:

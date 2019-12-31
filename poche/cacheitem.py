@@ -6,5 +6,5 @@ from typing import Optional
 
 @dataclass
 class Cacheitem:
-    expire: Optional[datetime]
+    expiration: Optional[datetime]
     value: Any

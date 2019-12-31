@@ -32,7 +32,7 @@ def test_set_key_not_hashable(cache):
 
 def test_set_ttl(cache):
     cache.set(KEY, VALUE, ttl=TTL)
-    assert isinstance(cache._store[KEY].expire, datetime)
+    assert isinstance(cache._store[KEY].expiration, datetime)
 
 
 def test_get(cache):
@@ -55,7 +55,7 @@ def test_get_ttl(cache):
     assert cache.get(KEY) == VALUE
 
 
-def test_get_ttl_expired(cache):
+def test_get_ttl_expirationd(cache):
     cache._store[KEY] = VALUE_ITEM_TTL
     with pytest.raises(KeyError):
         assert cache.get(KEY)
