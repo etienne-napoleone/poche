@@ -10,34 +10,31 @@ from typing import Tuple
 class Cache:
     _store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
 
-    @staticmethod
     def set(
+        self,
         key: Hashable,
         value: Any,
         ttl: Optional[int] = None,
         override: bool = True,
     ) -> None:
-        if not override and Cache._store.get(key):
+        if not override and self._store.get(key):
             pass
         else:
-            Cache._store[key] = (
-                Cache._get_expiration_dt(ttl) if ttl else None,
+            self._store[key] = (
+                self._get_expiration_dt(ttl) if ttl else None,
                 value,
             )
 
-    @staticmethod
-    def get(key: Hashable) -> Any:
-        value = Cache._store[key]
+    def get(self, key: Hashable) -> Any:
+        value = self._store[key]
         if isinstance(value[0], datetime) and value[0] < datetime.now():
-            del Cache._store[key]
+            del self._store[key]
             raise KeyError
         else:
             return value[1]
 
-    @staticmethod
-    def flush() -> None:
-        Cache._store.clear()
+    def flush(self) -> None:
+        self._store.clear()
 
-    @staticmethod
-    def _get_expiration_dt(ttl: int) -> datetime:
+    def _get_expiration_dt(self, ttl: int) -> datetime:
         return datetime.now() + timedelta(seconds=ttl)
