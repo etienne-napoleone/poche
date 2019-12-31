@@ -50,4 +50,5 @@ others:
 >>> from poche import Cache
 >>> c = Cache()
 >>> c.flush()  # Flush entire cache
+>>> c.get_or_set()  # Get or set with the same signature as set
 ```
