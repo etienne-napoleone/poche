@@ -104,3 +104,10 @@ def test_flush():
 def test_get_expiration():
     assert Cache._get_expiration_dt(TTL) > datetime.now()
     Cache._store = {}
+
+
+def test_raise_if_not_str():
+    Cache._raise_if_not_str(KEY)
+    with pytest.raises(TypeError):
+        assert Cache._raise_if_not_str(1)
+    Cache._store = {}
