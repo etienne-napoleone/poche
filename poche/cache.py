@@ -14,4 +14,4 @@ class Cache:
 
     @staticmethod
     def get(key: str) -> Any:
-        return Cache._store[key]
+        return Cache._store.get(key, None)

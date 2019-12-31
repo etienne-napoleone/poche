@@ -30,3 +30,7 @@ def test_get():
     Cache._store[KEY] = VALUE
     assert Cache.get(KEY) == VALUE
     Cache._store = {}
+
+
+def test_get_absent():
+    assert not Cache.get(KEY)
