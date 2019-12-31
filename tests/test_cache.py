@@ -83,6 +83,21 @@ def test_delete_absent(cache):
         assert cache.delete(KEY)
 
 
+def test_keys(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert list(cache.keys()) == [KEY]
+
+
+def test_values(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert list(cache.values()) == [VALUE_ITEM]
+
+
+def test_items(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert list(cache.items()) == [(KEY, VALUE_ITEM)]
+
+
 def test_flush(cache):
     cache._store[KEY] = "test"
     cache.flush()
