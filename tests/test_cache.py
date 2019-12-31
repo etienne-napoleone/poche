@@ -87,4 +87,8 @@ def test_flush(cache):
 
 
 def test_get_expiration(cache):
-    assert cache._get_expiration_dt(TTL) > datetime.now()
+    assert cache._get_expiration(TTL) > datetime.now()
+
+
+def test_get_expiration_no_ttl(cache):
+    assert not cache._get_expiration(None)

@@ -22,7 +22,7 @@ class Cache:
             pass
         else:
             self._store[key] = (
-                self._get_expiration_dt(ttl) if ttl else None,
+                self._get_expiration(ttl),
                 value,
             )
 
@@ -37,5 +37,5 @@ class Cache:
     def flush(self) -> None:
         self._store.clear()
 
-    def _get_expiration_dt(self, ttl: int) -> datetime:
-        return datetime.now() + timedelta(seconds=ttl)
+    def _get_expiration(self, ttl: Optional[int]) -> Optional[datetime]:
+        return datetime.now() + timedelta(seconds=ttl) if ttl else None
