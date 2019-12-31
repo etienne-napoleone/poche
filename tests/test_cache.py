@@ -19,6 +19,12 @@ def test_set():
     Cache._store = {}
 
 
+def test_set_key_not_str():
+    with pytest.raises(TypeError):
+        assert Cache.set(1, VALUE)
+    Cache._store = {}
+
+
 def test_set_override():
     Cache.set(KEY, VALUE)
     assert Cache._store[KEY] == VALUE_TUPLE
@@ -44,6 +50,12 @@ def test_set_ttl():
 def test_get():
     Cache._store[KEY] = VALUE_TUPLE
     assert Cache.get(KEY) == VALUE
+    Cache._store = {}
+
+
+def test_get_key_not_str():
+    with pytest.raises(TypeError):
+        assert Cache.get(1)
     Cache._store = {}
 
 

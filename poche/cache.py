@@ -13,6 +13,8 @@ class Cache:
     def set(
         key: str, value: Any, ttl: Optional[int] = None, override: bool = True
     ):
+        if not isinstance(key, str):
+            raise TypeError("The key should be of string type.")
         if override:
             Cache._store[key] = (
                 Cache._get_expiration_dt(ttl) if ttl else None,
@@ -25,15 +27,17 @@ class Cache:
 
     @staticmethod
     def get(key: str) -> Any:
+        if not isinstance(key, str):
+            raise TypeError("The key should be of string type.")
         value_tuple = Cache._store.get(key)
         if not value_tuple:
-            raise KeyError
+            raise KeyError(f"Key {key} not found in cache.")
         elif isinstance(value_tuple[0], datetime):
             if value_tuple[0] > datetime.now():
                 return value_tuple[1]
             else:
                 del Cache._store[key]
-                raise KeyError
+                raise KeyError(f"Key {key} not found in cache.")
         else:
             return value_tuple[1]
 
