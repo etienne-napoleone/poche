@@ -15,12 +15,12 @@ class Cache:
     ):
         if override:
             Cache._store[key] = (
-                Cache.get_expiration(ttl) if ttl else None,
+                Cache._get_expiration_dt(ttl) if ttl else None,
                 value,
             )
         else:
             Cache._store.setdefault(
-                key, (Cache.get_expiration(ttl) if ttl else None, value)
+                key, (Cache._get_expiration_dt(ttl) if ttl else None, value)
             )
 
     @staticmethod
@@ -40,5 +40,5 @@ class Cache:
             return value_tuple[1]
 
     @staticmethod
-    def get_expiration(ttl: int) -> datetime:
+    def _get_expiration_dt(ttl: int) -> datetime:
         return datetime.now() + timedelta(seconds=ttl)
