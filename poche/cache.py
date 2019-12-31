@@ -27,23 +27,16 @@ class Cache:
     @staticmethod
     def get(key: str) -> Any:
         Cache._raise_if_not_str(key)
-        if not isinstance(key, str):
-            raise TypeError("The key should be of string type.")
-        value_tuple = Cache._store.get(key)
-        if not value_tuple:
-            raise KeyError(key)
-        elif isinstance(value_tuple[0], datetime):
-            if value_tuple[0] > datetime.now():
-                return value_tuple[1]
-            else:
-                del Cache._store[key]
-                raise KeyError(key)
+        value = Cache._store[key]
+        if isinstance(value[0], datetime) and value[0] < datetime.now():
+            del Cache._store[key]
+            raise KeyError
         else:
-            return value_tuple[1]
+            return value[1]
 
     @staticmethod
     def flush() -> None:
-        Cache._store = {}
+        Cache._store.clear()
 
     @staticmethod
     def _get_expiration_dt(ttl: int) -> datetime:
