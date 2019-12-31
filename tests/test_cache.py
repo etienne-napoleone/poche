@@ -1,8 +1,14 @@
+from datetime import datetime
+from datetime import timedelta
+import time
+
 from poche.cache import Cache
 
+TTL = 3600
 KEY = "test_key"
 VALUE = 1
 VALUE_TUPLE = (None, VALUE)
+VALUE_TUPLE_TTL = (datetime.now(), VALUE)
 
 
 def test_set():
@@ -27,6 +33,12 @@ def test_set_override_disabled():
     Cache._store = {}
 
 
+def test_set_ttl():
+    Cache.set(KEY, VALUE, ttl=TTL)
+    assert isinstance(Cache._store[KEY][0], datetime)
+    Cache._store = {}
+
+
 def test_get():
     Cache._store[KEY] = VALUE_TUPLE
     assert Cache.get(KEY) == VALUE
@@ -35,3 +47,35 @@ def test_get():
 
 def test_get_absent():
     assert not Cache.get(KEY)
+    Cache._store = {}
+
+
+def test_get_ttl():
+    Cache._store[KEY] = (datetime.now() + timedelta(days=1), VALUE)
+    assert Cache.get(KEY) == VALUE
+    Cache._store = {}
+
+
+def test_get_ttl_expired():
+    Cache._store[KEY] = VALUE_TUPLE_TTL
+    assert not Cache.get(KEY)
+    Cache._store = {}
+
+
+def test_ttl():
+    Cache.set(KEY, VALUE, TTL)
+    time.sleep(1)
+    assert Cache.get(KEY)
+    Cache._store = {}
+
+
+def test_ttl_expire():
+    Cache.set(KEY, VALUE, 1)
+    time.sleep(2)
+    assert not Cache.get(KEY)
+    Cache._store = {}
+
+
+def test_get_expiration():
+    assert Cache._get_expiration_dt(TTL) > datetime.now()
+    Cache._store = {}
