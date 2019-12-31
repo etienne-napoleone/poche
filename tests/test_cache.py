@@ -4,8 +4,6 @@ import time
 
 import pytest
 
-from poche.cache import Cache
-
 TTL = 3600
 KEY = "test_key"
 VALUE = 1
@@ -13,94 +11,80 @@ VALUE_TUPLE = (None, VALUE)
 VALUE_TUPLE_TTL = (datetime.now(), VALUE)
 
 
-def test_set():
-    Cache.set(KEY, VALUE)
-    assert Cache._store[KEY] == VALUE_TUPLE
-    Cache._store = {}
+def test_set(cache):
+    cache.set(KEY, VALUE)
+    assert cache._store[KEY] == VALUE_TUPLE
 
 
-def test_set_key_not_hashable():
+def test_set_key_not_hashable(cache):
     with pytest.raises(TypeError):
-        assert Cache.set({}, VALUE)
-    Cache._store = {}
+        assert cache.set({}, VALUE)
 
 
-def test_set_override():
-    Cache.set(KEY, VALUE)
-    assert Cache._store[KEY] == VALUE_TUPLE
-    Cache.set(KEY, "override")
-    assert Cache._store[KEY] == (None, "override")
-    Cache._store = {}
+def test_set_override(cache):
+    cache.set(KEY, VALUE)
+    assert cache._store[KEY] == VALUE_TUPLE
+    cache.set(KEY, "override")
+    assert cache._store[KEY] == (None, "override")
 
 
-def test_set_override_disabled():
-    Cache.set(KEY, VALUE)
-    assert Cache._store[KEY] == VALUE_TUPLE
-    Cache.set(KEY, "override", override=False)
-    assert Cache._store[KEY] == VALUE_TUPLE
-    Cache._store = {}
+def test_set_override_disabled(cache):
+    cache.set(KEY, VALUE)
+    assert cache._store[KEY] == VALUE_TUPLE
+    cache.set(KEY, "override", override=False)
+    assert cache._store[KEY] == VALUE_TUPLE
 
 
-def test_set_ttl():
-    Cache.set(KEY, VALUE, ttl=TTL)
-    assert isinstance(Cache._store[KEY][0], datetime)
-    Cache._store = {}
+def test_set_ttl(cache):
+    cache.set(KEY, VALUE, ttl=TTL)
+    assert isinstance(cache._store[KEY][0], datetime)
 
 
-def test_get():
-    Cache._store[KEY] = VALUE_TUPLE
-    assert Cache.get(KEY) == VALUE
-    Cache._store = {}
+def test_get(cache):
+    cache._store[KEY] = VALUE_TUPLE
+    assert cache.get(KEY) == VALUE
 
 
-def test_get_key_not_hashable():
+def test_get_key_not_hashable(cache):
     with pytest.raises(TypeError):
-        assert Cache.get({})
-    Cache._store = {}
+        assert cache.get({})
 
 
-def test_get_absent():
+def test_get_absent(cache):
     with pytest.raises(KeyError):
-        assert Cache.get(KEY)
-    Cache._store = {}
+        assert cache.get(KEY)
 
 
-def test_get_ttl():
-    Cache._store[KEY] = (datetime.now() + timedelta(days=1), VALUE)
-    assert Cache.get(KEY) == VALUE
-    Cache._store = {}
+def test_get_ttl(cache):
+    cache._store[KEY] = (datetime.now() + timedelta(days=1), VALUE)
+    assert cache.get(KEY) == VALUE
 
 
-def test_get_ttl_expired():
-    Cache._store[KEY] = VALUE_TUPLE_TTL
+def test_get_ttl_expired(cache):
+    cache._store[KEY] = VALUE_TUPLE_TTL
     with pytest.raises(KeyError):
-        assert Cache.get(KEY)
-    Cache._store = {}
+        assert cache.get(KEY)
 
 
-def test_ttl():
-    Cache.set(KEY, VALUE, TTL)
+def test_ttl(cache):
+    cache.set(KEY, VALUE, TTL)
     time.sleep(1)
-    assert Cache.get(KEY)
-    Cache._store = {}
+    assert cache.get(KEY)
 
 
-def test_ttl_expire():
-    Cache.set(KEY, VALUE, 1)
+def test_ttl_expire(cache):
+    cache.set(KEY, VALUE, 1)
     time.sleep(2)
     with pytest.raises(KeyError):
-        assert Cache.get(KEY)
-    Cache._store = {}
+        assert cache.get(KEY)
 
 
-def test_flush():
-    Cache._store[KEY] = "test"
-    Cache.flush()
+def test_flush(cache):
+    cache._store[KEY] = "test"
+    cache.flush()
     with pytest.raises(KeyError):
-        assert Cache._store[KEY]
-    Cache._store = {}
+        assert cache._store[KEY]
 
 
-def test_get_expiration():
-    assert Cache._get_expiration_dt(TTL) > datetime.now()
-    Cache._store = {}
+def test_get_expiration(cache):
+    assert cache._get_expiration_dt(TTL) > datetime.now()
