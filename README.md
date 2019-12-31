@@ -31,3 +31,9 @@ disable override:
 >>> Cache.get("my_key")
 "my_value"
 ```
+
+others:
+```python
+>>> from poche import Cache
+>>> Cache.flush()  # Flush entire cache
+```
