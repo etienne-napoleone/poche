@@ -17,14 +17,12 @@ class Cache:
         ttl: Optional[int] = None,
         override: bool = True,
     ) -> None:
-        if override:
+        if not override and Cache._store.get(key):
+            pass
+        else:
             Cache._store[key] = (
                 Cache._get_expiration_dt(ttl) if ttl else None,
                 value,
-            )
-        else:
-            Cache._store.setdefault(
-                key, (Cache._get_expiration_dt(ttl) if ttl else None, value)
             )
 
     @staticmethod
