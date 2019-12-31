@@ -4,29 +4,27 @@ from typing import Any
 from typing import Dict
 from typing import Hashable
 from typing import Optional
-from typing import Tuple
+
+from poche.cacheitem import Cacheitem
 
 
 class Cache:
     def __init__(self, default_ttl: Optional[int] = None) -> None:
         self.default_ttl = default_ttl
-        self._store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
+        self._store: Dict[Hashable, Cacheitem] = {}
 
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
-        self._store[key] = (
-            self._get_expiration(ttl),
-            value,
-        )
+        self._store[key] = Cacheitem(self._get_expiration(ttl), value)
 
     def get(self, key: Hashable) -> Any:
-        value = self._store[key]
-        if isinstance(value[0], datetime) and value[0] < datetime.now():
+        item = self._store[key]
+        if isinstance(item.expire, datetime) and item.expire < datetime.now():
             del self._store[key]
             raise KeyError
         else:
-            return value[1]
+            return item.value
 
     def get_or_set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None
