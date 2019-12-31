@@ -19,9 +19,9 @@ def test_set():
     Cache._store = {}
 
 
-def test_set_key_not_str():
+def test_set_key_not_hashable():
     with pytest.raises(TypeError):
-        assert Cache.set(1, VALUE)
+        assert Cache.set({}, VALUE)
     Cache._store = {}
 
 
@@ -53,9 +53,9 @@ def test_get():
     Cache._store = {}
 
 
-def test_get_key_not_str():
+def test_get_key_not_hashable():
     with pytest.raises(TypeError):
-        assert Cache.get(1)
+        assert Cache.get({})
     Cache._store = {}
 
 
@@ -103,11 +103,4 @@ def test_flush():
 
 def test_get_expiration():
     assert Cache._get_expiration_dt(TTL) > datetime.now()
-    Cache._store = {}
-
-
-def test_raise_if_not_str():
-    Cache._raise_if_not_str(KEY)
-    with pytest.raises(TypeError):
-        assert Cache._raise_if_not_str(1)
     Cache._store = {}
