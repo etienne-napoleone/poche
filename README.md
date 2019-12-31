@@ -1,10 +1,26 @@
 # poche
 
-Simple Python dictionary in-memory caching.
+Simple Python in-memory caching.
+
+Meant to speed up using dictionaries as cache backend for simple usecases.
 
 No external dependencies, requires Python 3.6+.
 
+## Performances
+
+🚧 wip
+
 ## Example
+
+Basic:
+
+```python
+>>> from poche import Cache
+>>> c = Cache()
+>>> c.set("my_key", "my_value")
+>>> c.get("my_key")
+"my_key"
+```
 
 Example with TTLs:
 
@@ -44,7 +60,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-### `Cache().set()`
+#### `Cache().set()`
 
 **Parameters:**
 
@@ -60,7 +76,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-### `Cache().get()`
+#### `Cache().get()`
 
 **Parameters:**
 
@@ -74,7 +90,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
-### `Cache().delete()`
+#### `Cache().delete()`
 
 **Parameters:**
 
@@ -88,7 +104,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-### `Cache().get_or_set()`
+#### `Cache().get_or_set()`
 
 **Parameters:**
 
@@ -104,7 +120,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
-### `Cache().flush()`
+#### `Cache().flush()`
 
 **Parameters:** -
 
