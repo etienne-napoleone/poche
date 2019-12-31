@@ -26,7 +26,6 @@ class Cache:
     @staticmethod
     def get(key: str) -> Any:
         value_tuple = Cache._store.get(key)
-        print(value_tuple)
         if not value_tuple:
             return None
         elif isinstance(value_tuple[0], datetime):
@@ -36,7 +35,6 @@ class Cache:
                 del Cache._store[key]
                 return None
         else:
-            print("no ttl")
             return value_tuple[1]
 
     @staticmethod
