@@ -4,31 +4,31 @@ Simple Python dictionary in-memory caching.
 
 No external dependencies, requires Python 3.6+.
 
-## Usage
+## Example
 
-example with TTLs:
+Example with TTLs:
 
 ```python
 >>> from poche import Cache
 >>> import time
->>> c = Cache(default_ttl=5)  # optional `default_ttl`, default to None
+>>> c = Cache(default_ttl=5)           # optional `default_ttl`, default to None
 >>> c.set("my_key", "my_value", ttl=1)
 >>> time.sleep(2)
 >>> c.get("my_key")
 Traceback (most recent call last):
   ...
 KeyError
->>> c.set("my_key", "my_value")  # use default 5s TTL
+>>> c.set("my_key", "my_value")        # use default 5s TTL
 >>> time.sleep(2)
 >>> c.get("my_key")
 "my_key"
 ```
 
-### API
+## API
 
 Poche cache is accessed through the `poche.Cache()` class.
 
-#### `Cache()`
+### `Cache()`
 
 **Parameters:**
 
@@ -44,7 +44,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-#### `Cache().set()`
+### `Cache().set()`
 
 **Parameters:**
 
@@ -60,9 +60,10 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-#### `Cache().get()`
+### `Cache().get()`
 
 **Parameters:**
+
 | Name  | Type     | Default |
 |-------|----------|---------|
 | `key` | Hashable | -       |
@@ -73,7 +74,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
-#### `Cache().delete()`
+### `Cache().delete()`
 
 **Parameters:**
 
@@ -87,7 +88,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** None
 
-#### `Cache().get_or_set()`
+### `Cache().get_or_set()`
 
 **Parameters:**
 
@@ -103,7 +104,7 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
-#### `Cache().flush()`
+### `Cache().flush()`
 
 **Parameters:** -
 
