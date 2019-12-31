@@ -39,14 +39,9 @@ class Cache:
         self._store.clear()
 
     def _get_expiration(self, ttl: Optional[int]) -> Optional[datetime]:
-        print(ttl, self.default_ttl)
-        if not self.default_ttl and not ttl:
-            return None
-        elif not self.default_ttl and ttl:
+        if ttl:
             return datetime.now() + timedelta(seconds=ttl)
-        elif self.default_ttl and not ttl:
+        elif self.default_ttl:
             return datetime.now() + timedelta(seconds=self.default_ttl)
-        elif self.default_ttl and ttl:
-            return datetime.now() + timedelta(seconds=ttl)
         else:
-            return None  # silence mypy
+            return None
