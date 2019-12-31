@@ -93,6 +93,14 @@ def test_ttl_expire():
     Cache._store = {}
 
 
+def test_flush():
+    Cache._store[KEY] = "test"
+    Cache.flush()
+    with pytest.raises(KeyError):
+        assert Cache._store[KEY]
+    Cache._store = {}
+
+
 def test_get_expiration():
     assert Cache._get_expiration_dt(TTL) > datetime.now()
     Cache._store = {}
