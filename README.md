@@ -44,6 +44,8 @@ KeyError
 
 Poche cache is accessed through the `poche.Cache()` class.
 
+Each entry is formed by a key and a `poche.Cacheitem()`.
+
 ### `Cache()`
 
 **Parameters:**
@@ -90,19 +92,6 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
-#### `Cache().delete()`
-
-**Parameters:**
-
-| Name  | Type     | Default |
-|-------|----------|---------|
-| `key` | Hashable | -       |
-
-**Raises:**
-
-  - KeyError 
-
-**Returns:** None
 
 #### `Cache().get_or_set()`
 
@@ -120,10 +109,66 @@ Poche cache is accessed through the `poche.Cache()` class.
 
 **Returns:** Any
 
+#### `Cache().delete()`
+
+**Parameters:**
+
+| Name  | Type     | Default |
+|-------|----------|---------|
+| `key` | Hashable | -       |
+
+**Raises:**
+
+  - KeyError 
+
+**Returns:** None
+
+#### `Cache().keys()`
+
+**Parameters:** -
+
+**Raises:** -
+
+**Returns:** KeysView[Hashable]
+
+#### `Cache().values()`
+
+**Parameters:** -
+
+**Raises:** -
+
+**Returns:** ValuesView[Any]
+
+#### `Cache().items()`
+
+**Parameters:** -
+
+**Raises:** -
+
+**Returns:** ItemsView[Hashable, Cacheitem]
+
 #### `Cache().flush()`
 
 **Parameters:** -
 
 **Raises:** -
+
+**Returns:** None
+
+### `Cacheitem()` (Dataclass)
+
+**Parameters:**
+
+| Name         | Type               | Default |
+|--------------|--------------------|---------|
+| `expiration` | Optional[datetime] | -       |
+| `value`      | Any                | -       |
+
+**Attributes:**
+
+| Name         | Type               | Default |
+|--------------|--------------------|---------|
+| `expiration` | Optional[datetime] | -       |
+| `value`      | Any                | -       |
 
 **Returns:** None
