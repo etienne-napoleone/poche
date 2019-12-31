@@ -8,7 +8,8 @@ from typing import Tuple
 
 
 class Cache:
-    _store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
+    def __init__(self):
+        self._store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
 
     def set(
         self,
