@@ -15,7 +15,9 @@ ttl:
 >>> Cache.set("my_key", "my_value", ttl=1)
 >>> time.sleep(2)
 >>> Cache.get("my_key")
-None
+Traceback (most recent call last):
+  ...
+KeyError
 ```
 
 disable override:
