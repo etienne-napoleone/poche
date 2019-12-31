@@ -59,18 +59,6 @@ def test_get_ttl_expired(cache):
         assert cache.get(KEY)
 
 
-def test_del(cache):
-    cache._store[KEY] = VALUE_TUPLE
-    cache.delete(KEY)
-    with pytest.raises(KeyError):
-        assert cache._store[KEY] == VALUE
-
-
-def test_del_absent(cache):
-    with pytest.raises(KeyError):
-        assert cache.delete(KEY)
-
-
 def test_get_or_set_get(cache):
     cache._store[KEY] = VALUE_TUPLE
     assert cache.get_or_set(KEY, VALUE) == VALUE
@@ -79,6 +67,18 @@ def test_get_or_set_get(cache):
 def test_get_or_set_set(cache):
     assert cache.get_or_set(KEY, VALUE) == VALUE
     assert cache._store[KEY] == VALUE_TUPLE
+
+
+def test_delete(cache):
+    cache._store[KEY] = VALUE_TUPLE
+    cache.delete(KEY)
+    with pytest.raises(KeyError):
+        assert cache._store[KEY] == VALUE
+
+
+def test_delete_absent(cache):
+    with pytest.raises(KeyError):
+        assert cache.delete(KEY)
 
 
 def test_flush(cache):
