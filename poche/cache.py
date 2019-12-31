@@ -13,19 +13,12 @@ class Cache:
         self._store: Dict[Hashable, Tuple[Optional[datetime], Any]] = {}
 
     def set(
-        self,
-        key: Hashable,
-        value: Any,
-        ttl: Optional[int] = None,
-        override: bool = True,
+        self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
-        if not override and self._store.get(key):
-            pass
-        else:
-            self._store[key] = (
-                self._get_expiration(ttl),
-                value,
-            )
+        self._store[key] = (
+            self._get_expiration(ttl),
+            value,
+        )
 
     def get(self, key: Hashable) -> Any:
         value = self._store[key]
@@ -34,6 +27,15 @@ class Cache:
             raise KeyError
         else:
             return value[1]
+
+    def get_or_set(
+        self, key: Hashable, value: Any, ttl: Optional[int] = None
+    ) -> Any:
+        try:
+            return self.get(key)
+        except KeyError:
+            self.set(key, value, ttl)
+            return value
 
     def flush(self) -> None:
         self._store.clear()

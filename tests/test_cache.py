@@ -28,20 +28,6 @@ def test_set_key_not_hashable(cache):
         assert cache.set({}, VALUE)
 
 
-def test_set_override(cache):
-    cache.set(KEY, VALUE)
-    assert cache._store[KEY] == VALUE_TUPLE
-    cache.set(KEY, "override")
-    assert cache._store[KEY] == (None, "override")
-
-
-def test_set_override_disabled(cache):
-    cache.set(KEY, VALUE)
-    assert cache._store[KEY] == VALUE_TUPLE
-    cache.set(KEY, "override", override=False)
-    assert cache._store[KEY] == VALUE_TUPLE
-
-
 def test_set_ttl(cache):
     cache.set(KEY, VALUE, ttl=TTL)
     assert isinstance(cache._store[KEY][0], datetime)
@@ -73,17 +59,14 @@ def test_get_ttl_expired(cache):
         assert cache.get(KEY)
 
 
-def test_ttl(cache):
-    cache.set(KEY, VALUE, TTL)
-    time.sleep(1)
-    assert cache.get(KEY)
+def test_get_or_set_get(cache):
+    cache._store[KEY] = VALUE_TUPLE
+    assert cache.get_or_set(KEY, VALUE) == VALUE
 
 
-def test_ttl_expire(cache):
-    cache.set(KEY, VALUE, 1)
-    time.sleep(2)
-    with pytest.raises(KeyError):
-        assert cache.get(KEY)
+def test_get_or_set_set(cache):
+    assert cache.get_or_set(KEY, VALUE) == VALUE
+    assert cache._store[KEY] == VALUE_TUPLE
 
 
 def test_flush(cache):
