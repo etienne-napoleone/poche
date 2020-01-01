@@ -25,7 +25,7 @@ v1:
 
 - [x] K/V cache system
 - [x] Basic TTL
-- [ ] TTL methods (get, bump, remove, etc)
+- [x] TTL methods (get, bump, remove, etc)
 - [ ] Memoizing decorator
 - [ ] (Lower required Python version)
 
@@ -44,27 +44,83 @@ Instantiate a Poche cache object:
 >>> c = poche.Cache(default_ttl=5)
 ```
 
-Get, set, get or set (gos) and delete items:
+**Warning:** When using TTLs, The only call removing a value with expired TTL is `get()`!
+
+### Basic operations
+
+`set()`: Set a value in cache.
+
+`get()`: Get a value in cache.
+
+`gos()`: Get or set a value in cache if not present.
+
+`delete()`: Delete a value in cache.
+
+`flush()`: Flush all cache content.
 
 ```python
->>> c.set("un", 1, ttl=5)
+>>> c.set("un", 1)
 >>> c.get("un")
 1
->>> time.sleep(5)
->>> c.get("un")
+>>> c.delete("un")
+
+>>> c.get("deux")
 KeyError
->>> c.set("deux", 2, ttl=datetime(2025, 20, 1)) 
->>> c.delete("deux")
->>> c.gos("trois", 3)
+>>> c.gos("deux", 2) 
 2
->>> c.gos("trois", "another value")
+>>> c.gos("deux", 3)
 2
->>> c.get("trois")
+>>> c.get("deux")
 2
 >>> c.flush()
 ```
 
-Dictionary methods:
+### TTLs
+
+`get_ttl()`: Get the TTL of a cache item.
+
+`set_ttl()`: Set the TTL of a cache item.
+
+`bump()`: Add seconds to the current TTL.
+
+```python
+>>> c.set("un", 1, ttl=2)
+>>> c.get("un")
+1
+>>> time.sleep(3)
+>>> c.get("un")
+KeyError
+
+>>> c.set("deux", 2, ttl=datetime(2025, 20, 1)) 
+>>> c.get_ttl("deux")
+datetime(2025, 20, 1)
+>>> c.set_ttl("deux", 2)
+>>> time.sleep(3)
+>>> c.get("deux")
+KeyError
+
+>>> c.set("trois", 3, ttl=2)
+>>> c.set_ttl(None)
+>>> time.sleep(3)
+>>> c.get("trois")
+3
+
+# The only call removing a value with expired TTL is `get()`!
+>>> c.set("quatre", 4, ttl=2)
+>>> time.sleep(3)
+>>> "quatre" in c.keys()
+True
+>>> c.get("quatre")
+KeyError
+>>> "quatre" in c.keys()
+False
+```
+
+### Dictionary methods
+
+`keys()`: Get the cache keys. Similar to the dictionary method.
+`values()`: Get de cache values. Similar to the dictionary method.
+`items()`: Get the cache values. Similar to the dictionary method.
 
 ```python
 >>> c.set("un", 1)
@@ -79,7 +135,7 @@ Dictionary methods:
 "2 -> deux"
 ```
 
-Access raw objects:
+### Access raw objects
 
 ```Python
 >>> c.set("un", 1)
