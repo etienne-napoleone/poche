@@ -24,12 +24,14 @@ deploy:
     token: $GITHUB_TOKEN
     file_glob: true
     file: dist/*
+    skip_cleanup: true
     on:
       tags: true
       python: 3.6
   - provider: pypi
     username: $PYPI_USERNAME
     password: $PYPI_PASSWORD
+    skip_cleanup: true
     on:
       tags: true
       python: 3.6

@@ -8,7 +8,15 @@ Simple and fast Python in-memory caching.
 
 Meant to speed up using dictionaries as cache backend for simple usecases.
 
-No external dependencies, 100% code coverage and static type checked. Requires Python 3.6+
+No external dependencies, 100% code coverage and static type checked.
+
+## Installation
+
+Requires Python 3.6+.
+
+```bash
+pip install poche
+```
 
 ## Roadmap to v1
 
