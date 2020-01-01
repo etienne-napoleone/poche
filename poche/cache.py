@@ -27,6 +27,9 @@ class Cache:
             raise TypeError(f"Expected Cacheitem, got {type(value)}.")
         self._store[key] = value
 
+    def __delitem__(self, key: Hashable) -> None:
+        del self._store[key]
+
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
