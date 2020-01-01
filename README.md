@@ -13,6 +13,7 @@ No external dependencies, requires Python 3.6+.
 ## Usage
 
 Instantiate a Poche cache object:
+
 ```python
 >>> import poche
 >>> c = poche.Cache()
@@ -20,7 +21,7 @@ Instantiate a Poche cache object:
 >>> c = poche.Cache(default_ttl=5)
 ```
 
-Get, set, delete items:
+Get, set, get or set (gos) and delete items:
 
 ```python
 >>> c.set("un", 1, ttl=5)
@@ -29,9 +30,9 @@ Get, set, delete items:
 >>> time.sleep(5)
 >>> c.get("un")
 KeyError
->>> c.get_or_set("deux", 2)
+>>> c.gos("deux", 2)
 2
->>> c.get_or_set("deux", 3)
+>>> c.gos("deux", 3)
 2
 >>> c.get("deux")
 2

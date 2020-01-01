@@ -61,13 +61,13 @@ def test_get_ttl_expirationd(cache):
         assert cache.get(KEY)
 
 
-def test_get_or_set_get(cache):
+def test_gos_get(cache):
     cache._store[KEY] = VALUE_ITEM
-    assert cache.get_or_set(KEY, VALUE) == VALUE
+    assert cache.gos(KEY, VALUE) == VALUE
 
 
-def test_get_or_set_set(cache):
-    assert cache.get_or_set(KEY, VALUE) == VALUE
+def test_gos_set(cache):
+    assert cache.gos(KEY, VALUE) == VALUE
     assert cache._store[KEY] == VALUE_ITEM
 
 

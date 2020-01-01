@@ -49,9 +49,7 @@ class Cache:
         else:
             return item.value
 
-    def get_or_set(
-        self, key: Hashable, value: Any, ttl: Optional[int] = None
-    ) -> Any:
+    def gos(self, key: Hashable, value: Any, ttl: Optional[int] = None) -> Any:
         try:
             return self.get(key)
         except KeyError:
