@@ -44,14 +44,8 @@ class Cache:
 
     def get(self, key: Hashable) -> Any:
         item = self._store[key]
-        if (
-            isinstance(item.expiration, datetime)
-            and item.expiration < datetime.now()
-        ):
-            del self._store[key]
-            raise KeyError
-        else:
-            return item.value
+        self._expire(key, item)
+        return item.value
 
     def gos(self, key: Hashable, value: Any, ttl: Optional[int] = None) -> Any:
         try:
@@ -88,3 +82,11 @@ class Cache:
             return datetime.now() + timedelta(seconds=self.default_ttl)
         else:
             return None
+
+    def _expire(self, key: Hashable, item: Cacheitem) -> None:
+        if (
+            isinstance(item.expiration, datetime)
+            and item.expiration < datetime.now()
+        ):
+            del self._store[key]
+            raise KeyError

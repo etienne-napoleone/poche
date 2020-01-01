@@ -135,6 +135,18 @@ def test_get_expiration_default_ttl_no_ttl(cache_default_ttl):
     assert end < datetime.now()
 
 
+def test_expire(cache):
+    item = Cacheitem(DATETIME, 1)
+    cache._store[KEY] = Cacheitem(DATETIME, 1)
+    cache._expire(KEY, item)
+
+
+def test_expire_raises_keyerror(cache):
+    cache._store[KEY] = VALUE_ITEM_TTL
+    with pytest.raises(KeyError):
+        cache._expire(KEY, VALUE_ITEM_TTL)
+
+
 def test_magic_len(cache):
     cache._store[KEY] = VALUE_ITEM
     assert len(cache) == 1
