@@ -54,6 +54,24 @@ class Cache:
             self.set(key, value, ttl)
             return value
 
+    def set_ttl(
+        self, key: Hashable, ttl: Optional[Union[int, datetime]],
+    ) -> None:
+        if isinstance(ttl, int):
+            self._store[key].expiration = datetime.now() + timedelta(
+                seconds=ttl
+            )
+        else:
+            self._store[key].expiration = ttl
+
+    def get_ttl(self, key: Hashable) -> Optional[datetime]:
+        return self._store[key].expiration
+
+    def bump(self, key: str, ttl: int) -> None:
+        expiration = self._store[key].expiration
+        if expiration:
+            self._store[key].expiration = expiration + timedelta(seconds=ttl)
+
     def delete(self, key: Hashable) -> None:
         del self._store[key]
 

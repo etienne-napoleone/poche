@@ -31,7 +31,7 @@ def test_set_key_not_hashable(cache):
         assert cache.set({}, VALUE)
 
 
-def test_set_ttl(cache):
+def test_set_with_ttl(cache):
     cache.set(KEY, VALUE, ttl=TTL)
     assert isinstance(cache._store[KEY].expiration, datetime)
 
@@ -51,7 +51,7 @@ def test_get_raises_keyerror(cache):
         assert cache.get(KEY)
 
 
-def test_get_ttl(cache):
+def test_get_with_ttl(cache):
     cache._store[KEY] = Cacheitem(DATETIME, VALUE)
     assert cache.get(KEY) == VALUE
 
@@ -70,6 +70,40 @@ def test_gos_get(cache):
 def test_gos_set(cache):
     assert cache.gos(KEY, VALUE) == VALUE
     assert cache._store[KEY] == VALUE_ITEM
+
+
+def test_set_ttl(cache):
+    cache._store[KEY] = Cacheitem(None, 1)
+    assert not cache._store[KEY].expiration
+    cache.set_ttl(KEY, 1)
+    assert isinstance(cache._store[KEY].expiration, datetime)
+
+
+def test_set_ttl_datetime(cache):
+    cache._store[KEY] = Cacheitem(None, 1)
+    assert not cache._store[KEY].expiration
+    cache.set_ttl(KEY, datetime.now())
+    assert isinstance(cache._store[KEY].expiration, datetime)
+
+
+def test_get_ttl(cache):
+    cache._store[KEY] = Cacheitem(None, 1)
+    assert not cache.get_ttl(KEY)
+    cache._store[KEY] = Cacheitem(datetime.now(), 1)
+    assert isinstance(cache.get_ttl(KEY), datetime)
+
+
+def test_bump(cache):
+    now = datetime.now()
+    cache._store[KEY] = Cacheitem(now, 1)
+    cache.bump(KEY, 1)
+    assert cache._store[KEY].expiration > now
+
+
+def test_bump_no_ttl(cache):
+    cache._store[KEY] = Cacheitem(None, 1)
+    cache.bump(KEY, 1)
+    assert not cache._store[KEY].expiration
 
 
 def test_delete(cache):
