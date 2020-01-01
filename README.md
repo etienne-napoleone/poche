@@ -53,14 +53,14 @@ Get, set, get or set (gos) and delete items:
 >>> time.sleep(5)
 >>> c.get("un")
 KeyError
->>> c.gos("deux", 2)
+>>> c.set("deux", 2, ttl=datetime(2025, 20, 1)) 
+>>> c.gos("trois", 3)
 2
->>> c.gos("deux", 3)
+>>> c.gos("trois", "another value")
 2
->>> c.get("deux")
+>>> c.get("trois")
 2
->>> c.delete("deux")
-# or flush this whole cache
+>>> c.delete("trois")
 >>> c.flush()
 ```
 
