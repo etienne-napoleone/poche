@@ -116,13 +116,13 @@ KeyError
 False
 ```
 
-### Dictionary methods
+### Dictionary like methods
 
-`keys() -> KeysView[Hashable]`: Get the cache keys. Similar to the dictionary method.
+`keys() -> KeysView[Hashable]`: Get the cache keys.
 
-`values() -> ValuesView[Any]`: Get de cache values. Similar to the dictionary method.
+`values() -> ValuesView[Any]`: Get de cache values.
 
-`items() -> ItemsView[Hashable, Cacheitem]`: Get the cache values. Similar to the dictionary method.
+`items() -> ItemsView[Hashable, Cacheitem]`: Get the cache values.
 
 ```python
 >>> c.set("un", 1)
