@@ -4,15 +4,19 @@
 [![codecov](https://codecov.io/gh/etienne-napoleone/poche/branch/develop/graph/badge.svg)](https://codecov.io/gh/etienne-napoleone/poche)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
-Simple Python in-memory caching.
+Simple and fast Python in-memory caching.
 
 Meant to speed up using dictionaries as cache backend for simple usecases.
 
-No external dependencies, requires Python 3.6+.
+No external dependencies, 100% code coverage and static type checked. Requires Python 3.6+
 
-## Performances
+## Roadmap to v1
 
-🚧 wip
+- [x] K/V cache system
+- [x] Basic TTL
+- [ ] TTL methods (get, bump, remove, etc)
+- [ ] Memoizing decorator
+- [ ] (Lower required Python version)
 
 ## Usage
 
