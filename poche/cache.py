@@ -6,13 +6,16 @@ from typing import Hashable
 from typing import ItemsView
 from typing import KeysView
 from typing import Optional
+from typing import Union
 from typing import ValuesView
 
 from poche.cacheitem import Cacheitem
 
 
 class Cache:
-    def __init__(self, default_ttl: Optional[int] = None) -> None:
+    def __init__(
+        self, default_ttl: Optional[Union[int, datetime]] = None
+    ) -> None:
         self.default_ttl = default_ttl
         self._store: Dict[Hashable, Cacheitem] = {}
 
@@ -34,7 +37,10 @@ class Cache:
         return key in self._store
 
     def set(
-        self, key: Hashable, value: Any, ttl: Optional[int] = None,
+        self,
+        key: Hashable,
+        value: Any,
+        ttl: Optional[Union[int, datetime]] = None,
     ) -> None:
         self._store[key] = Cacheitem(self._get_expiration(ttl), value)
 
@@ -71,10 +77,20 @@ class Cache:
     def flush(self) -> None:
         self._store.clear()
 
-    def _get_expiration(self, ttl: Optional[int]) -> Optional[datetime]:
+    def _get_expiration(
+        self, ttl: Optional[Union[int, datetime]]
+    ) -> Optional[datetime]:
         if ttl:
-            return datetime.now() + timedelta(seconds=ttl)
+            return (
+                (datetime.now() + timedelta(seconds=ttl))
+                if isinstance(ttl, int)
+                else ttl
+            )
         elif self.default_ttl:
-            return datetime.now() + timedelta(seconds=self.default_ttl)
+            return (
+                (datetime.now() + timedelta(seconds=self.default_ttl))
+                if isinstance(self.default_ttl, int)
+                else self.default_ttl
+            )
         else:
             return None
