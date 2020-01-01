@@ -181,6 +181,12 @@ def test_expire_raises_keyerror(cache):
         cache._expire(KEY, VALUE_ITEM_TTL)
 
 
+def test_magic_repr(cache, cache_default_ttl):
+    assert "poche.Cache" in repr(cache)
+    assert "None" in repr(cache)
+    assert "1" in repr(cache_default_ttl)
+
+
 def test_magic_len(cache):
     cache._store[KEY] = VALUE_ITEM
     assert len(cache) == 1

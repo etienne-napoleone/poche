@@ -9,6 +9,9 @@ class Cacheitem:
     expiration: Optional[datetime]
     value: Any
 
+    def __repr__(self):
+        return f"poche.Cacheitem({repr(self.expiration)}, {repr(self.value)})"
+
     def __eq__(self, other: object) -> bool:
         return self.value == getattr(other, "value", other)
 

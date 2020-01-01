@@ -17,6 +17,9 @@ class Cache:
         self.default_ttl = default_ttl
         self._store: Dict[Hashable, Cacheitem] = {}
 
+    def __repr__(self):
+        return f"poche.Cache({repr(self.default_ttl)})"
+
     def __len__(self) -> int:
         return len(self._store)
 

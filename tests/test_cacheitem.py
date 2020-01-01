@@ -12,6 +12,12 @@ def test_instantiate():
     assert ITEM.value
 
 
+def test_magic_repr():
+    assert "poche.Cacheitem" in repr(ITEM)
+    assert "datetime.datetime" in repr(ITEM)
+    assert "1" in repr(ITEM)
+
+
 def test_magic_eq():
     assert ITEM == ITEM
     assert ITEM == Cacheitem(None, 1)
