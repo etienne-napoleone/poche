@@ -48,15 +48,37 @@ Instantiate a Poche cache object:
 
 ### Basic operations
 
-`set(key: Hashable, value: Any, Optional: Optional[Union[int, datetime]] = None) -> None`: Set a value in cache.
+Set a value in cache:
 
-`get(key: Hashable) -> Any`: Get a value in cache.
+```python
+def set(key: Hashable, value: Any, Optional: Optional[Union[int, datetime]] = None) -> None
+```
 
-`gos(key: Hashable, value: Any, ttl: Optional[int] = None) -> Any`: Get or set a value in cache if not present.
+Get a value in cache:
 
-`delete(key: Hashable) -> None`: Delete a value in cache.
+```python
+def get(key: Hashable) -> Any
+```
 
-`flush() -> None`: Flush all cache content.
+Get or set a value in cache if not present:
+
+```python
+def gos(key: Hashable, value: Any, ttl: Optional[int] = None) -> Any
+```
+
+Delete a value in cache:
+
+```python
+def delete(key: Hashable) -> None
+```
+
+Flush all cache content:
+
+```python
+def flush() -> None
+```
+
+Examples:
 
 ```python
 >>> c.set("un", 1)
@@ -77,11 +99,24 @@ KeyError
 
 ### TTLs
 
-`set_ttl(key: Hashable, ttl: Optional[Union[int, datetime]],) -> None`: Set the TTL of a cache item.
+Set the TTL of a cache item:
 
-`get_ttl(key: Hashable) -> Optional[datetime]`: Get the TTL of a cache item.
+```python
+def set_ttl(key: Hashable, ttl: Optional[Union[int, datetime]],) -> None
+```
 
-`bump(key: str, ttl: int) -> None:`: Add seconds to the current TTL.
+Get the TTL of a cache item:
+
+```python
+def get_ttl(key: Hashable) -> Optional[datetime]
+```
+
+Add seconds to the current TTL:
+
+```python
+def bump(key: str, ttl: int) -> None:
+```
+Examples:
 
 ```python
 >>> c.set("un", 1, ttl=2)
@@ -118,11 +153,24 @@ False
 
 ### Dictionary like methods
 
-`keys() -> KeysView[Hashable]`: Get the cache keys.
+Get the cache keys:
 
-`values() -> ValuesView[Any]`: Get de cache values.
+```python
+def keys() -> KeysView[Hashable]
+```
 
-`items() -> ItemsView[Hashable, Cacheitem]`: Get the cache values.
+Get de cache values:
+
+```python
+def values() -> ValuesView[Any]
+```
+
+Get the cache values:
+
+```python
+def items() -> ItemsView[Hashable, Cacheitem]
+```
+Examples:
 
 ```python
 >>> c.set("un", 1)
@@ -138,6 +186,8 @@ False
 ```
 
 ### Access raw objects
+
+Examples:
 
 ```Python
 >>> c.set("un", 1)
