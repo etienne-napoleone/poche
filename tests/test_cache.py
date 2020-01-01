@@ -128,3 +128,8 @@ def test_get_expiration_default_ttl_no_ttl(cache_default_ttl):
     assert end > datetime.now()
     time.sleep(2)
     assert end < datetime.now()
+
+
+def test_magic_len(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert len(cache) == 1

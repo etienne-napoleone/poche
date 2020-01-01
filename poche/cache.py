@@ -16,6 +16,9 @@ class Cache:
         self.default_ttl = default_ttl
         self._store: Dict[Hashable, Cacheitem] = {}
 
+    def __len__(self) -> int:
+        return len(self._store)
+
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
