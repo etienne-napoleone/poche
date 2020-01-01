@@ -54,13 +54,13 @@ Get, set, get or set (gos) and delete items:
 >>> c.get("un")
 KeyError
 >>> c.set("deux", 2, ttl=datetime(2025, 20, 1)) 
+>>> c.delete("deux")
 >>> c.gos("trois", 3)
 2
 >>> c.gos("trois", "another value")
 2
 >>> c.get("trois")
 2
->>> c.delete("trois")
 >>> c.flush()
 ```
 
