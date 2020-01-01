@@ -10,165 +10,69 @@ No external dependencies, requires Python 3.6+.
 
 🚧 wip
 
-## Example
+## Usage
 
-Basic:
-
+Instantiate a Poche cache object:
 ```python
->>> from poche import Cache
->>> c = Cache()
->>> c.set("my_key", "my_value")
->>> c.get("my_key")
-"my_key"
+>>> import poche
+>>> c = poche.Cache()
+# or you can set a default TTL
+>>> c = poche.Cache(default_ttl=5)
 ```
 
-Example with TTLs:
+Get, set, delete items:
 
 ```python
->>> from poche import Cache
->>> import time
->>> c = Cache(default_ttl=5)           # optional `default_ttl`, default to None
->>> c.set("my_key", "my_value", ttl=1)
->>> time.sleep(2)
->>> c.get("my_key")
-Traceback (most recent call last):
-  ...
+>>> c.set("un", 1, ttl=5)
+>>> c.get("un")
+1
+>>> time.sleep(5)
+>>> c.get("un")
 KeyError
->>> c.set("my_key", "my_value")        # use default 5s TTL
->>> time.sleep(2)
->>> c.get("my_key")
-"my_key"
+>>> c.get_or_set("deux", 2)
+2
+>>> c.get_or_set("deux", 3)
+2
+>>> c.get("deux")
+2
+>>> c.delete("deux")
+# or flush this whole cache
+>>> c.flush()
 ```
 
-## API
+Dictionary methods:
 
-Poche cache is accessed through the `poche.Cache()` class.
+```python
+>>> c.set("un", 1)
+>>> c.set("deux", 2)
+>>> c.keys()
+["un", "deux"]
+>>> c.values()
+[1, 2]
+>>> for item in c.items():
+...     print(f"{item[0]} -> {item[1].value}")
+"1 -> un"
+"2 -> deux"
+```
 
-Each entry is formed by a key and a `poche.Cacheitem()`.
+Access raw objects:
 
-### `Cache()`
-
-**Parameters:**
-
-| Name          | Type          | Default |
-|---------------|---------------|---------|
-| `default_ttl` | Optional[int] | None    |
-
-**Attributes:**
-
-| Name          | Type          | Default |
-|---------------|---------------|---------|
-| `default_ttl` | Optional[int] | None    |
-
-**Returns:** None
-
-#### `Cache().set()`
-
-**Parameters:**
-
-| Name    | Type          | Default |
-|---------|---------------|---------|
-| `key`   | Hashable      | -       |
-| `value` | Any           | -       |
-| `ttl`   | Optional[int] | None    |
-
-**Raises:**
-
-  - KeyError 
-
-**Returns:** None
-
-#### `Cache().get()`
-
-**Parameters:**
-
-| Name  | Type     | Default |
-|-------|----------|---------|
-| `key` | Hashable | -       |
-
-**Raises:**
-
-  - KeyError 
-
-**Returns:** Any
-
-
-#### `Cache().get_or_set()`
-
-**Parameters:**
-
-| Name    | Type          | Default |
-|---------|---------------|---------|
-| `key`   | Hashable      | -       |
-| `value` | Any           | -       |
-| `ttl`   | Optional[int] | None    |
-
-**Raises:**
-
-  - KeyError 
-
-**Returns:** Any
-
-#### `Cache().delete()`
-
-**Parameters:**
-
-| Name  | Type     | Default |
-|-------|----------|---------|
-| `key` | Hashable | -       |
-
-**Raises:**
-
-  - KeyError 
-
-**Returns:** None
-
-#### `Cache().keys()`
-
-**Parameters:** -
-
-**Raises:** -
-
-**Returns:** KeysView[Hashable]
-
-#### `Cache().values()`
-
-**Parameters:** -
-
-**Raises:** -
-
-**Returns:** ValuesView[Any]
-
-#### `Cache().items()`
-
-**Parameters:** -
-
-**Raises:** -
-
-**Returns:** ItemsView[Hashable, Cacheitem]
-
-#### `Cache().flush()`
-
-**Parameters:** -
-
-**Raises:** -
-
-**Returns:** None
-
-### `Cacheitem()` (Dataclass)
-
-**Parameters:**
-
-| Name         | Type               | Default |
-|--------------|--------------------|---------|
-| `expiration` | Optional[datetime] | -       |
-| `value`      | Any                | -       |
-
-**Attributes:**
-
-| Name         | Type               | Default |
-|--------------|--------------------|---------|
-| `expiration` | Optional[datetime] | -       |
-| `value`      | Any                | -       |
-
-**Returns:** None
+```Python
+>>> c.set("un", 1)
+>>> c["un"]
+Cacheitem(expiration=None, value=1)
+>>> c["un"] == 1
+True
+>>> 1 in c
+True
+>>> c["un"] < 2
+True
+>>> c["deux"] = 2
+TypeError
+>>> c["deux"] = Cacheitem(expiration=None, value=2)
+>>> len(c)
+2
+>>> c["un"] < c["deux"]
+True
+>>> del c["deux"]
+```
