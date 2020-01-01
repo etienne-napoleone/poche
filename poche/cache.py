@@ -30,6 +30,9 @@ class Cache:
     def __delitem__(self, key: Hashable) -> None:
         del self._store[key]
 
+    def __contains__(self, key: Hashable) -> bool:
+        return key in self._store
+
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:

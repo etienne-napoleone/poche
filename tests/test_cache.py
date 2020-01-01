@@ -45,7 +45,7 @@ def test_get_key_not_hashable(cache):
         assert cache.get({})
 
 
-def test_get_raise_keyerror(cache):
+def test_get_raises_keyerror(cache):
     with pytest.raises(KeyError):
         assert cache.get(KEY)
 
@@ -78,7 +78,7 @@ def test_delete(cache):
         assert cache._store[KEY] == VALUE
 
 
-def test_delete_raise_keyerror(cache):
+def test_delete_raises_keyerror(cache):
     with pytest.raises(KeyError):
         assert cache.delete(KEY)
 
@@ -145,7 +145,7 @@ def test_magic_setitem(cache):
     assert cache._store[KEY] == VALUE_ITEM
 
 
-def test_magic_setitem_raise_typeerror(cache):
+def test_magic_setitem_raises_typeerror(cache):
     with pytest.raises(TypeError):
         cache[KEY] = "value"
 
@@ -157,6 +157,17 @@ def test_magic_delitem(cache):
         assert cache._store[KEY]
 
 
-def test_magic_delitem_raise_keyerror(cache):
+def test_magic_delitem_raises_keyerror(cache):
     with pytest.raises(KeyError):
         del cache[KEY]
+
+
+def test_magic_contains(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert KEY in cache
+    assert "absent_key" not in cache
+
+
+def test_magic_contains_raises_typeerror(cache):
+    with pytest.raises(TypeError):
+        assert {} in cache
