@@ -48,15 +48,15 @@ Instantiate a Poche cache object:
 
 ### Basic operations
 
-`set()`: Set a value in cache.
+`set(key: Hashable, value: Any, Optional: Optional[Union[int, datetime]] = None) -> None`: Set a value in cache.
 
-`get()`: Get a value in cache.
+`get(key: Hashable) -> Any`: Get a value in cache.
 
-`gos()`: Get or set a value in cache if not present.
+`gos(key: Hashable, value: Any, ttl: Optional[int] = None) -> Any`: Get or set a value in cache if not present.
 
-`delete()`: Delete a value in cache.
+`delete(key: Hashable) -> None`: Delete a value in cache.
 
-`flush()`: Flush all cache content.
+`flush() -> None`: Flush all cache content.
 
 ```python
 >>> c.set("un", 1)
@@ -77,11 +77,11 @@ KeyError
 
 ### TTLs
 
-`get_ttl()`: Get the TTL of a cache item.
+`set_ttl(key: Hashable, ttl: Optional[Union[int, datetime]],) -> None`: Set the TTL of a cache item.
 
-`set_ttl()`: Set the TTL of a cache item.
+`get_ttl(key: Hashable) -> Optional[datetime]`: Get the TTL of a cache item.
 
-`bump()`: Add seconds to the current TTL.
+`bump(key: str, ttl: int) -> None:`: Add seconds to the current TTL.
 
 ```python
 >>> c.set("un", 1, ttl=2)
@@ -118,9 +118,11 @@ False
 
 ### Dictionary methods
 
-`keys()`: Get the cache keys. Similar to the dictionary method.
-`values()`: Get de cache values. Similar to the dictionary method.
-`items()`: Get the cache values. Similar to the dictionary method.
+`keys() -> KeysView[Hashable]`: Get the cache keys. Similar to the dictionary method.
+
+`values() -> ValuesView[Any]`: Get de cache values. Similar to the dictionary method.
+
+`items() -> ItemsView[Hashable, Cacheitem]`: Get the cache values. Similar to the dictionary method.
 
 ```python
 >>> c.set("un", 1)
