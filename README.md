@@ -19,13 +19,19 @@ Requires Python 3.6+.
 pip install poche
 ```
 
-## Roadmap to v1
+## Roadmap
+
+v1:
 
 - [x] K/V cache system
 - [x] Basic TTL
 - [ ] TTL methods (get, bump, remove, etc)
 - [ ] Memoizing decorator
 - [ ] (Lower required Python version)
+
+v2:
+
+- [ ] Optional per cache stats
 
 ## Usage
 
