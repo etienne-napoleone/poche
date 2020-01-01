@@ -1,8 +1,19 @@
 [tool.poetry]
 name = "poche"
-version = "0.2.0"
-description = ""
+version = "0.3.0"
+description = "Simple and fast Python in-memory caching library"
+readme = "README.md"
+license = "GPL-3.0+"
+repository = "https://github.com/etienne-napoleone/poche"
+keywords = ["cache", "in-memory", "simple", "fast"]
 authors = ["etienne-napoleone <etienne.napoleone@gmail.com>"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Database",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"

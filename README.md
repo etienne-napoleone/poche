@@ -1,8 +1,9 @@
 # poche
 
 [![Build Status](https://travis-ci.org/etienne-napoleone/poche.svg?branch=develop)](https://travis-ci.org/etienne-napoleone/poche)
-[![codecov](https://codecov.io/gh/etienne-napoleone/poche/branch/develop/graph/badge.svg)](https://codecov.io/gh/etienne-napoleone/poche)
+[![Codecov](https://codecov.io/gh/etienne-napoleone/poche/branch/develop/graph/badge.svg)](https://codecov.io/gh/etienne-napoleone/poche)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Simple and fast Python in-memory caching.
 
@@ -18,13 +19,19 @@ Requires Python 3.6+.
 pip install poche
 ```
 
-## Roadmap to v1
+## Roadmap
+
+v1:
 
 - [x] K/V cache system
 - [x] Basic TTL
-- [ ] TTL methods (get, bump, remove, etc)
+- [x] TTL methods (get, bump, remove, etc)
 - [ ] Memoizing decorator
 - [ ] (Lower required Python version)
+
+v2:
+
+- [ ] Optional per cache stats
 
 ## Usage
 
@@ -37,27 +44,133 @@ Instantiate a Poche cache object:
 >>> c = poche.Cache(default_ttl=5)
 ```
 
-Get, set, get or set (gos) and delete items:
+**Warning:** When using TTLs, The only call removing a value with expired TTL is `get()`!
+
+### Basic operations
+
+Set a value in cache:
 
 ```python
->>> c.set("un", 1, ttl=5)
+def set(key: Hashable, value: Any, Optional: Optional[Union[int, datetime]] = None) -> None
+```
+
+Get a value in cache:
+
+```python
+def get(key: Hashable) -> Any
+```
+
+Get or set a value in cache if not present:
+
+```python
+def gos(key: Hashable, value: Any, ttl: Optional[int] = None) -> Any
+```
+
+Delete a value in cache:
+
+```python
+def delete(key: Hashable) -> None
+```
+
+Flush all cache content:
+
+```python
+def flush() -> None
+```
+
+Examples:
+
+```python
+>>> c.set("un", 1)
 >>> c.get("un")
 1
->>> time.sleep(5)
->>> c.get("un")
+>>> c.delete("un")
+
+>>> c.get("deux")
 KeyError
->>> c.gos("deux", 2)
+>>> c.gos("deux", 2) 
 2
 >>> c.gos("deux", 3)
 2
 >>> c.get("deux")
 2
->>> c.delete("deux")
-# or flush this whole cache
 >>> c.flush()
 ```
 
-Dictionary methods:
+### TTLs
+
+Set the TTL of a cache item:
+
+```python
+def set_ttl(key: Hashable, ttl: Optional[Union[int, datetime]],) -> None
+```
+
+Get the TTL of a cache item:
+
+```python
+def get_ttl(key: Hashable) -> Optional[datetime]
+```
+
+Add seconds to the current TTL:
+
+```python
+def bump(key: str, ttl: int) -> None:
+```
+Examples:
+
+```python
+>>> c.set("un", 1, ttl=2)
+>>> c.get("un")
+1
+>>> time.sleep(3)
+>>> c.get("un")
+KeyError
+
+>>> c.set("deux", 2, ttl=datetime(2025, 20, 1)) 
+>>> c.get_ttl("deux")
+datetime(2025, 20, 1)
+>>> c.set_ttl("deux", 2)
+>>> time.sleep(3)
+>>> c.get("deux")
+KeyError
+
+>>> c.set("trois", 3, ttl=2)
+>>> c.set_ttl(None)
+>>> time.sleep(3)
+>>> c.get("trois")
+3
+
+# The only call removing a value with expired TTL is `get()`!
+>>> c.set("quatre", 4, ttl=2)
+>>> time.sleep(3)
+>>> "quatre" in c.keys()
+True
+>>> c.get("quatre")
+KeyError
+>>> "quatre" in c.keys()
+False
+```
+
+### Dictionary like methods
+
+Get the cache keys:
+
+```python
+def keys() -> KeysView[Hashable]
+```
+
+Get de cache values:
+
+```python
+def values() -> ValuesView[Any]
+```
+
+Get the cache values:
+
+```python
+def items() -> ItemsView[Hashable, Cacheitem]
+```
+Examples:
 
 ```python
 >>> c.set("un", 1)
@@ -72,7 +185,9 @@ Dictionary methods:
 "2 -> deux"
 ```
 
-Access raw objects:
+### Access raw objects
+
+Examples:
 
 ```Python
 >>> c.set("un", 1)

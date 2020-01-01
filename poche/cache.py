@@ -6,6 +6,7 @@ from typing import Hashable
 from typing import ItemsView
 from typing import KeysView
 from typing import Optional
+from typing import Union
 from typing import ValuesView
 
 from poche.cacheitem import Cacheitem
@@ -34,20 +35,17 @@ class Cache:
         return key in self._store
 
     def set(
-        self, key: Hashable, value: Any, ttl: Optional[int] = None,
+        self,
+        key: Hashable,
+        value: Any,
+        ttl: Optional[Union[int, datetime]] = None,
     ) -> None:
         self._store[key] = Cacheitem(self._get_expiration(ttl), value)
 
     def get(self, key: Hashable) -> Any:
         item = self._store[key]
-        if (
-            isinstance(item.expiration, datetime)
-            and item.expiration < datetime.now()
-        ):
-            del self._store[key]
-            raise KeyError
-        else:
-            return item.value
+        self._expire(key, item)
+        return item.value
 
     def gos(self, key: Hashable, value: Any, ttl: Optional[int] = None) -> Any:
         try:
@@ -55,6 +53,24 @@ class Cache:
         except KeyError:
             self.set(key, value, ttl)
             return value
+
+    def set_ttl(
+        self, key: Hashable, ttl: Optional[Union[int, datetime]],
+    ) -> None:
+        if isinstance(ttl, int):
+            self._store[key].expiration = datetime.now() + timedelta(
+                seconds=ttl
+            )
+        else:
+            self._store[key].expiration = ttl
+
+    def get_ttl(self, key: Hashable) -> Optional[datetime]:
+        return self._store[key].expiration
+
+    def bump(self, key: str, ttl: int) -> None:
+        expiration = self._store[key].expiration
+        if expiration:
+            self._store[key].expiration = expiration + timedelta(seconds=ttl)
 
     def delete(self, key: Hashable) -> None:
         del self._store[key]
@@ -71,10 +87,24 @@ class Cache:
     def flush(self) -> None:
         self._store.clear()
 
-    def _get_expiration(self, ttl: Optional[int]) -> Optional[datetime]:
+    def _get_expiration(
+        self, ttl: Optional[Union[int, datetime]]
+    ) -> Optional[datetime]:
         if ttl:
-            return datetime.now() + timedelta(seconds=ttl)
+            return (
+                (datetime.now() + timedelta(seconds=ttl))
+                if isinstance(ttl, int)
+                else ttl
+            )
         elif self.default_ttl:
             return datetime.now() + timedelta(seconds=self.default_ttl)
         else:
             return None
+
+    def _expire(self, key: Hashable, item: Cacheitem) -> None:
+        if (
+            isinstance(item.expiration, datetime)
+            and item.expiration < datetime.now()
+        ):
+            del self._store[key]
+            raise KeyError
