@@ -133,3 +133,8 @@ def test_get_expiration_default_ttl_no_ttl(cache_default_ttl):
 def test_magic_len(cache):
     cache._store[KEY] = VALUE_ITEM
     assert len(cache) == 1
+
+
+def test_magic_getitem(cache):
+    cache._store[KEY] = VALUE_ITEM
+    assert cache[KEY] == VALUE_ITEM

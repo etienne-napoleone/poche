@@ -19,6 +19,9 @@ class Cache:
     def __len__(self) -> int:
         return len(self._store)
 
+    def __getitem__(self, key: Hashable) -> Cacheitem:
+        return self._store[key]
+
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
