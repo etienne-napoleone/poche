@@ -138,3 +138,13 @@ def test_magic_len(cache):
 def test_magic_getitem(cache):
     cache._store[KEY] = VALUE_ITEM
     assert cache[KEY] == VALUE_ITEM
+
+
+def test_magic_setitem(cache):
+    cache[KEY] = VALUE_ITEM
+    assert cache._store[KEY] == VALUE_ITEM
+
+
+def test_magic_setitem_raise_typeerror(cache):
+    with pytest.raises(TypeError):
+        cache[KEY] = "value"

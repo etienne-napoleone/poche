@@ -22,6 +22,11 @@ class Cache:
     def __getitem__(self, key: Hashable) -> Cacheitem:
         return self._store[key]
 
+    def __setitem__(self, key: Hashable, value: Cacheitem) -> None:
+        if not isinstance(value, Cacheitem):
+            raise TypeError(f"Expected Cacheitem, got {type(value)}.")
+        self._store[key] = value
+
     def set(
         self, key: Hashable, value: Any, ttl: Optional[int] = None,
     ) -> None:
