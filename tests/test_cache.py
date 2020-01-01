@@ -7,6 +7,7 @@ import pytest
 from poche.cacheitem import Cacheitem
 
 TTL = 3600
+DATETIME = datetime.now() + timedelta(days=1)
 KEY = "test_key"
 VALUE = 1
 VALUE_ITEM = Cacheitem(None, VALUE)
@@ -51,7 +52,7 @@ def test_get_raises_keyerror(cache):
 
 
 def test_get_ttl(cache):
-    cache._store[KEY] = Cacheitem(datetime.now() + timedelta(days=1), VALUE)
+    cache._store[KEY] = Cacheitem(DATETIME, VALUE)
     assert cache.get(KEY) == VALUE
 
 
@@ -108,8 +109,12 @@ def test_flush(cache):
 def test_get_expiration(cache):
     end = cache._get_expiration(TTL)
     assert end > datetime.now()
-    time.sleep(2)
+
+
+def test_get_expiration_datetime(cache):
+    end = cache._get_expiration(DATETIME)
     assert end > datetime.now()
+    assert end == DATETIME
 
 
 def test_get_expiration_no_ttl(cache):
