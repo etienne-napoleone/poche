@@ -13,9 +13,7 @@ from poche.cacheitem import Cacheitem
 
 
 class Cache:
-    def __init__(
-        self, default_ttl: Optional[Union[int, datetime]] = None
-    ) -> None:
+    def __init__(self, default_ttl: Optional[int] = None) -> None:
         self.default_ttl = default_ttl
         self._store: Dict[Hashable, Cacheitem] = {}
 
@@ -87,10 +85,6 @@ class Cache:
                 else ttl
             )
         elif self.default_ttl:
-            return (
-                (datetime.now() + timedelta(seconds=self.default_ttl))
-                if isinstance(self.default_ttl, int)
-                else self.default_ttl
-            )
+            return datetime.now() + timedelta(seconds=self.default_ttl)
         else:
             return None
