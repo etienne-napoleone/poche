@@ -1,5 +1,8 @@
 # poche
 
+[![Build Status](https://travis-ci.org/etienne-napoleone/poche.svg?branch=develop)](https://travis-ci.org/etienne-napoleone/poche)
+[![codecov](https://codecov.io/gh/etienne-napoleone/poche/branch/develop/graph/badge.svg)](https://codecov.io/gh/etienne-napoleone/poche)
+
 Simple Python in-memory caching.
 
 Meant to speed up using dictionaries as cache backend for simple usecases.
