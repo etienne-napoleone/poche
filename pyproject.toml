@@ -5,7 +5,7 @@ description = "Simple and fast Python in-memory caching library"
 readme = "README.md"
 license = "GPL-3.0+"
 repository = "https://github.com/etienne-napoleone/poche"
-keywords = ["cache", "in-memory", "simple", "fast"]
+keywords = ["cache", "in-memory", "simple", "fast", "ttl"]
 authors = ["etienne-napoleone <etienne.napoleone@gmail.com>"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -24,9 +24,6 @@ flake8-black = "^0.1.1"
 coverage = "^5.0"
 mypy = "^0.761.0"
 codecov = "^2.0"
-
-[tool.black]
-line-length = 79
 
 [build-system]
 requires = ["poetry>=0.12"]
