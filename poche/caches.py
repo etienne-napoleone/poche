@@ -5,16 +5,16 @@ from typing import Optional
 
 
 class Cache(UserDict):
-    def getset(self, key: Hashable, item: Any) -> Optional[Any]:
+    def getset(self, key: Hashable, value: Any) -> Optional[Any]:
         """Get an item from the cache and set the value
 
         Args:
             key (Hashable): cache key
-            item (Any): cached value
+            value (Any): cached value
 
         Returns:
             Optional[Any]: previous cached value if any
         """
-        value = self.data.get(key)
-        self.data[key] = item
-        return value
+        old_value = self.data.get(key)
+        self.data[key] = value
+        return old_value
