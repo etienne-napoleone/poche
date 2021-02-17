@@ -8,12 +8,13 @@ repository = "https://github.com/etienne-napoleone/poche"
 keywords = ["cache", "in-memory", "simple", "fast", "ttl"]
 authors = ["etienne-napoleone <etienne.napoleone@gmail.com>"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Database",
     "Topic :: Utilities",
     "Typing :: Typed",
 ]
+include = ["poche/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -27,5 +28,5 @@ flake8 = "^3.8.4"
 isort = "^5.7.0"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
