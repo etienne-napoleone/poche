@@ -65,3 +65,6 @@ class Cache:
         old_value = self.get(key)
         self.set(key, value=value, ttl=ttl)
         return old_value
+
+    def flush(self) -> None:
+        self._items = {}

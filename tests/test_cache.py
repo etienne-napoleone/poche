@@ -200,3 +200,14 @@ def test_getset():
     cache._items["one"] = item
     assert cache.getset("one", "test2") == "test"
     assert cache._items["one"].value == "test2"
+
+
+def test_flush():
+    cache = Cache()
+    item_one = Item(value="test", expiration=None)
+    item_two = Item(value="test", expiration=None)
+    cache._items["one"] = item_one
+    cache._items["two"] = item_two
+    assert len(cache._items.keys()) == 2
+    cache.flush()
+    assert cache._items == {}

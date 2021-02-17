@@ -27,7 +27,7 @@ v1:
 - [x] `get`
 - [x] `set`
 - [x] `getset`
-- [ ] `flush`
+- [x] `flush`
 
 v1.1:
 

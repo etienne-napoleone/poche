@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poche"
-version = "0.3.0"
+version = "1.0.0"
 description = "Simple and fast Python in-memory caching library"
 readme = "README.md"
 license = "GPL-3.0+"
