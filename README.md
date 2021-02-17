@@ -47,23 +47,31 @@ from time import sleep
 import poche
 
 >>> c = poche.Cache()
->>> c = poche.Cache(ttl=5)  # you can also define a default TTL
 
->>> c.set("one", 1)
+>>> c.set("one", "uno")
 >>> c.get("one")
-1
+"uno"
 
 >>> c.get("two")
 None
->>> c.getset("two", 2)
+>>> c.getset("two", "dos")
 None
 >>> c.get("two")
-2
+"dos"
 
->>> c.set("three", 3, ttl=2)
+>>> c.set("three", "tres", ttl=2)
 >>> c.get("three")
-3
+"tres"
 >>> sleep(2)
 >>> c.get("three")
+None
+
+>>> c = poche.Cache(ttl=2)  # you can also define a default TTL
+
+>>> c.set("four", "cuatro")
+>>> c.get("four")
+"cuatro"
+>>> sleep(2)
+>>> c.get("four")
 None
 ```
