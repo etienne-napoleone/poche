@@ -1,5 +1,5 @@
-from poche.cache import Cache
-from poche.cacheitem import Cacheitem
+from poche.caches import Cache
+from poche.items import Item
 
-__all__ = ["Cache", "Cacheitem"]
-__version__ = "0.3.0"
+__all__ = ["Cache", "Item"]
+__version__ = "1.0.0"

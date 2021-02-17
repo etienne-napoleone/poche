@@ -1,230 +1,213 @@
-from datetime import datetime
-from datetime import timedelta
-import time
+from datetime import datetime, timedelta
 
 import pytest
 
-from poche.cacheitem import Cacheitem
-
-TTL = 3600
-DATETIME = datetime.now() + timedelta(days=1)
-KEY = "test_key"
-VALUE = 1
-VALUE_ITEM = Cacheitem(None, VALUE)
-VALUE_ITEM_TTL = Cacheitem(datetime.now(), VALUE)
+from poche import Cache, Item
 
 
-def test_set(cache):
-    cache.set(KEY, VALUE)
-    assert cache._store[KEY] == VALUE_ITEM
+def test_new_with_no_ttl():
+    cache = Cache()
+    assert cache._items == {}
+    assert not cache.ttl
 
 
-def test_set_default_ttl(cache_default_ttl):
-    cache_default_ttl.set(KEY, VALUE)
-    time.sleep(2)
-    with pytest.raises(KeyError):
-        assert cache_default_ttl.get(KEY) == VALUE_ITEM
+def test_new_with_int_ttl():
+    cache = Cache(ttl=60)
+    assert cache._items == {}
+    assert isinstance(cache.ttl, timedelta)
+    assert cache.ttl == timedelta(seconds=60)
 
 
-def test_set_key_not_hashable(cache):
+def test_new_with_timedelta_ttl():
+    cache = Cache(ttl=timedelta(seconds=60))
+    assert cache._items == {}
+    assert isinstance(cache.ttl, timedelta)
+    assert cache.ttl == timedelta(seconds=60)
+
+
+def test_new_with_ttl_typeerror():
     with pytest.raises(TypeError):
-        assert cache.set({}, VALUE)
-
-
-def test_set_with_ttl(cache):
-    cache.set(KEY, VALUE, ttl=TTL)
-    assert isinstance(cache._store[KEY].expiration, datetime)
-
-
-def test_get(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert cache.get(KEY) == VALUE
-
-
-def test_get_key_not_hashable(cache):
+        Cache(ttl="str")
     with pytest.raises(TypeError):
-        assert cache.get({})
+        Cache(ttl=True)
 
 
-def test_get_raises_keyerror(cache):
+def test_magic_delitem():
+    cache = Cache()
+    item = Item(value="test", expiration=None)
+    cache._items["one"] = item
+    del cache["one"]
+    assert not cache._items.get("one")
+
+
+def test_magic_getitem_with_existent_item():
+    cache = Cache()
+    item = Item(value="test", expiration=None)
+    cache._items["one"] = item
+    assert cache["one"] == "test"
+
+
+def test_magic_getitem_with_non_existent_item():
+    cache = Cache()
     with pytest.raises(KeyError):
-        assert cache.get(KEY)
+        cache["one"]
 
 
-def test_get_with_ttl(cache):
-    cache._store[KEY] = Cacheitem(DATETIME, VALUE)
-    assert cache.get(KEY) == VALUE
+def test_get_expiration_with_no_ttl():
+    cache = Cache()
+    assert not cache._get_expiration_from_ttl(ttl=None)
+    cache = Cache(ttl=60)
+    planned = datetime.now()
+    expiration = cache._get_expiration_from_ttl(ttl=None)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
 
 
-def test_get_ttl_expirationd(cache):
-    cache._store[KEY] = VALUE_ITEM_TTL
-    with pytest.raises(KeyError):
-        assert cache.get(KEY)
+def test_get_expiration_with_int_ttl():
+    cache = Cache()
+    delta = 10
+    planned = datetime.now() + timedelta(seconds=delta)
+    expiration = cache._get_expiration_from_ttl(ttl=delta)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    planned = datetime.now() + timedelta(seconds=delta)
+    expiration = cache._get_expiration_from_ttl(ttl=delta)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
 
 
-def test_gos_get(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert cache.gos(KEY, VALUE) == VALUE
+def test_get_expiration_with_timedelta_ttl():
+    cache = Cache()
+    delta = timedelta(seconds=10)
+    planned = datetime.now() + delta
+    expiration = cache._get_expiration_from_ttl(ttl=delta)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    delta = timedelta(seconds=10)
+    planned = datetime.now() + delta
+    expiration = cache._get_expiration_from_ttl(ttl=delta)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
 
 
-def test_gos_set(cache):
-    assert cache.gos(KEY, VALUE) == VALUE
-    assert cache._store[KEY] == VALUE_ITEM
+def test_get_expiration_with_datetime_ttl():
+    cache = Cache()
+    planned = datetime.now() + timedelta(seconds=10)
+    expiration = cache._get_expiration_from_ttl(ttl=planned)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    planned = datetime.now() + timedelta(seconds=10)
+    expiration = cache._get_expiration_from_ttl(ttl=planned)
+    assert isinstance(expiration, datetime)
+    assert expiration.second < planned.second + 1
+    assert expiration.second > planned.second - 1
 
 
-def test_set_ttl(cache):
-    cache._store[KEY] = Cacheitem(None, 1)
-    assert not cache._store[KEY].expiration
-    cache.set_ttl(KEY, 1)
-    assert isinstance(cache._store[KEY].expiration, datetime)
+def test_get_expiration_with_ttl_typeerror():
+    cache = Cache()
+    with pytest.raises(TypeError):
+        assert cache._get_expiration_from_ttl(ttl="test")
+    with pytest.raises(TypeError):
+        assert cache._get_expiration_from_ttl(ttl=True)
 
 
-def test_set_ttl_datetime(cache):
-    cache._store[KEY] = Cacheitem(None, 1)
-    assert not cache._store[KEY].expiration
-    cache.set_ttl(KEY, datetime.now())
-    assert isinstance(cache._store[KEY].expiration, datetime)
+def test_get_with_no_expiration():
+    cache = Cache()
+    item = Item(value="test", expiration=None)
+    cache._items["one"] = item
+    assert cache.get("one") == "test"
 
 
-def test_get_ttl(cache):
-    cache._store[KEY] = Cacheitem(None, 1)
-    assert not cache.get_ttl(KEY)
-    cache._store[KEY] = Cacheitem(datetime.now(), 1)
-    assert isinstance(cache.get_ttl(KEY), datetime)
+def test_get_with_expiration_not_expired():
+    cache = Cache()
+    item = Item(value="test", expiration=datetime.now() + timedelta(seconds=60))
+    cache._items["one"] = item
+    assert cache.get("one") == "test"
 
 
-def test_bump(cache):
-    now = datetime.now()
-    cache._store[KEY] = Cacheitem(now, 1)
-    cache.bump(KEY, 1)
-    assert cache._store[KEY].expiration > now
+def test_get_with_expiration_expired():
+    cache = Cache()
+    item = Item(value="test", expiration=datetime.now())
+    cache._items["one"] = item
+    assert not cache.get("one")
 
 
-def test_bump_no_ttl(cache):
-    cache._store[KEY] = Cacheitem(None, 1)
-    cache.bump(KEY, 1)
-    assert not cache._store[KEY].expiration
+def test_set_with_no_ttl():
+    cache = Cache()
+    cache.set("one", "test")
+    assert cache._items["one"].value == "test"
 
 
-def test_delete(cache):
-    cache._store[KEY] = VALUE_ITEM
-    cache.delete(KEY)
-    with pytest.raises(KeyError):
-        assert cache._store[KEY] == VALUE
+def test_set_with_int_ttl():
+    cache = Cache()
+    planned = datetime.now()
+    cache.set("one", "test", ttl=0)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    planned = datetime.now()
+    cache.set("one", "test", ttl=0)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
 
 
-def test_delete_raises_keyerror(cache):
-    with pytest.raises(KeyError):
-        assert cache.delete(KEY)
+def test_set_with_timedelta_ttl():
+    cache = Cache()
+    delta = timedelta(seconds=10)
+    planned = datetime.now() + delta
+    cache.set("one", "test", ttl=delta)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    delta = timedelta(seconds=10)
+    planned = datetime.now() + delta
+    cache.set("one", "test", ttl=delta)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
 
 
-def test_keys(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert list(cache.keys()) == [KEY]
+def test_set_with_datetime_ttl():
+    cache = Cache()
+    planned = datetime.now()
+    cache.set("one", "test", ttl=planned)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
+    cache = Cache(ttl=60)
+    planned = datetime.now()
+    cache.set("one", "test", ttl=planned)
+    assert cache._items["one"].value == "test"
+    assert cache._items["one"].expiration.second < planned.second + 1
+    assert cache._items["one"].expiration.second > planned.second - 1
 
 
-def test_values(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert list(cache.values()) == [VALUE_ITEM]
+def test_getset():
+    cache = Cache()
+    item = Item(value="test", expiration=None)
+    cache._items["one"] = item
+    assert cache.getset("one", "test2") == "test"
+    assert cache._items["one"].value == "test2"
 
 
-def test_items(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert list(cache.items()) == [(KEY, VALUE_ITEM)]
-
-
-def test_flush(cache):
-    cache._store[KEY] = "test"
+def test_flush():
+    cache = Cache()
+    item_one = Item(value="test", expiration=None)
+    item_two = Item(value="test", expiration=None)
+    cache._items["one"] = item_one
+    cache._items["two"] = item_two
+    assert len(cache._items.keys()) == 2
     cache.flush()
-    with pytest.raises(KeyError):
-        assert cache._store[KEY]
-
-
-def test_get_expiration(cache):
-    end = cache._get_expiration(TTL)
-    assert end > datetime.now()
-
-
-def test_get_expiration_datetime(cache):
-    end = cache._get_expiration(DATETIME)
-    assert end > datetime.now()
-    assert end == DATETIME
-
-
-def test_get_expiration_no_ttl(cache):
-    assert not cache._get_expiration(None)
-
-
-def test_get_expiration_default_ttl(cache_default_ttl):
-    end = cache_default_ttl._get_expiration(TTL)
-    assert end > datetime.now()
-    time.sleep(2)
-    assert end > datetime.now()
-
-
-def test_get_expiration_default_ttl_no_ttl(cache_default_ttl):
-    end = cache_default_ttl._get_expiration(None)
-    assert end > datetime.now()
-    time.sleep(2)
-    assert end < datetime.now()
-
-
-def test_expire(cache):
-    item = Cacheitem(DATETIME, 1)
-    cache._store[KEY] = Cacheitem(DATETIME, 1)
-    cache._expire(KEY, item)
-
-
-def test_expire_raises_keyerror(cache):
-    cache._store[KEY] = VALUE_ITEM_TTL
-    with pytest.raises(KeyError):
-        cache._expire(KEY, VALUE_ITEM_TTL)
-
-
-def test_magic_repr(cache, cache_default_ttl):
-    assert "poche.Cache" in repr(cache)
-    assert "None" in repr(cache)
-    assert "1" in repr(cache_default_ttl)
-
-
-def test_magic_len(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert len(cache) == 1
-
-
-def test_magic_getitem(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert cache[KEY] == VALUE_ITEM
-
-
-def test_magic_setitem(cache):
-    cache[KEY] = VALUE_ITEM
-    assert cache._store[KEY] == VALUE_ITEM
-
-
-def test_magic_setitem_raises_typeerror(cache):
-    with pytest.raises(TypeError):
-        cache[KEY] = "value"
-
-
-def test_magic_delitem(cache):
-    cache._store[KEY] = VALUE_ITEM
-    del cache[KEY]
-    with pytest.raises(KeyError):
-        assert cache._store[KEY]
-
-
-def test_magic_delitem_raises_keyerror(cache):
-    with pytest.raises(KeyError):
-        del cache[KEY]
-
-
-def test_magic_contains(cache):
-    cache._store[KEY] = VALUE_ITEM
-    assert KEY in cache
-    assert "absent_key" not in cache
-
-
-def test_magic_contains_raises_typeerror(cache):
-    with pytest.raises(TypeError):
-        assert {} in cache
+    assert cache._items == {}
