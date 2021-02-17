@@ -1,18 +1,13 @@
 from datetime import datetime
-from datetime import timedelta
-from typing import Any
-from typing import Optional
-from typing import Union
-
-from .utils import timedelta_to_datetime
+from typing import Any, Optional
 
 
-class TTLItem:
-    def __init__(
-        self, value: Any, ttl: Optional[Union[datetime, timedelta]] = None
-    ) -> None:
+class Item:
+    def __init__(self, value: Any, expiration: Optional[datetime]) -> None:
         self.value = value
-        if not ttl or isinstance(ttl, datetime):
-            self.ttl = ttl
-        else:
-            self.ttl = timedelta_to_datetime(ttl)
+        self.expiration = expiration
+
+    def is_expired(self) -> bool:
+        if self.expiration and self.expiration <= datetime.now():
+            return True
+        return False
