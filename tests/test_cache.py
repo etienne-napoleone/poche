@@ -32,6 +32,13 @@ def test_new_with_ttl_typeerror():
         Cache(ttl=True)
 
 
+def test_repr():
+    cache = Cache()
+    assert f"{cache}" == "Cache(None)"
+    cache = Cache(ttl=60)
+    assert f"{cache}" == f"Cache({timedelta(seconds=60)})"
+
+
 def test_magic_delitem():
     cache = Cache()
     item = Item(value="test", expiration=None)

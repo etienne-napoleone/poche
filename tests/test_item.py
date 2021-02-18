@@ -17,6 +17,16 @@ def test_new_with_expiration():
     assert item.expiration > datetime.now()
 
 
+def test_repr():
+    item = Item("test", None)
+    assert f"{item}" == 'Item("test", None)'
+    item = Item(5, None)
+    assert f"{item}" == "Item(5, None)"
+    now = datetime.now()
+    item = Item("test", now)
+    assert f"{item}" == f'Item("test", {now})'
+
+
 def test_is_expired():
     expiration = datetime.now() + timedelta(minutes=1)
     item = Item(value="test", expiration=expiration)
